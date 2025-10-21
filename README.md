@@ -15,7 +15,8 @@ If you dont wish to build the packages locally, this repository also provides pr
 
 `vay` works similarly to AUR helpers on Arch Linux.
 Automatically performs the actions needed to build the packages locally on your system.
-If you prefer to do this manually go to [Manually building](#manually-building)
+If you prefer to do this manually go to [Manually building](#manually-building).
+Note: this script not only works for the extra template files provided in this repository but also for packages not distrubted in the Voidlinux mirrors such as nonfree packages (discord, spotify, etc.)
 
 ## Installation
 
