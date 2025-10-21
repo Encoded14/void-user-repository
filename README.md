@@ -12,7 +12,7 @@ Includes a helper script, vay, which simplifies local package building and insta
 ## The `vay` script
 
 `vay` works similarly to AUR helpers on Arch Linux.
-It automatically clones both this repository and the upstream void-packages repository, copies the template files, builds the packages locally on your machine, and installs them.
+It automatically clones both this repository and the upstream void-packages repository, copies the template files, builds the packages locally on your machine, and installs them. This can also be used to easily install nonfree packages (discord, spotify, etc.), that are not distrubted as binaries by Voidlinux.
 
 ## Installation
 
