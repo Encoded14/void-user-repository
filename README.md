@@ -2,7 +2,7 @@
 
 This project is **not affiliated with or endorsed by the Void Linux project** or its maintainers.
 It is an **unofficial community tool** designed to simplify managing and building user-contributed packages using the void-packages build system.
-Use at your own discretion. All builds and installations are performed locally on your system.
+Use at your own discretion.
 
 # Void-User-Repository
 
