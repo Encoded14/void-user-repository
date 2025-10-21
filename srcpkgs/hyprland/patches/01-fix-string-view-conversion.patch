@@ -1,0 +1,10 @@
+--- a/hyprctl/main.cpp
++++ b/hyprctl/main.cpp
+@@ -268,7 +268,7 @@ int requestIPC(std::string_view request, std::string_view instanceSignature, st
+         return 1;
+     }
+
+-    std::string socketPath = getRuntimeDir() + "/" + instanceSignature + "/" + filename;
++    std::string socketPath = getRuntimeDir() + "/" + std::string(instanceSignature) + "/" + std::string(filename);
+
+     int SERVERSOCKET = socket(AF_UNIX, SOCK_STREAM, 0);
