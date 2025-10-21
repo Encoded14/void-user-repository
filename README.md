@@ -68,7 +68,7 @@ git clone https://github.com/void-linux/void-packages.git
 ```
 2. Copy the templates files from this repository into void-packages:
 ```
-cp -r void-user-repository/srcpkgs/* void-packages/srcpkgs/ 2>/dev/null || true
+cp -r void-user-repository/srcpkgs/* void-packages/srcpkgs/
 ```
 3. Edit shlibs by removing the lines found in shlibs_remove and appending the lines from shlibs_append.
 4. Bootstrap the build system:
