@@ -1,18 +1,21 @@
+# Void-User-Repository
+
 ## DISCLAIMER
 
 This project is **not affiliated with or endorsed by the Void Linux project** or its maintainers.
 It is an **unofficial community tool** designed to simplify managing and building user-contributed packages using the void-packages build system.
 Use at your own discretion.
 
-# Void-User-Repository
-
+## Overview
 A collection of template files for building packages on Void Linux.
 Includes a helper script, vay, which simplifies local package building and installation.
+If you dont wish to build the packages locally, this repository also provides prebuilt binaries in the releases. Information on how to easily download and install them go to [Prebuilt binaries](#prebuilt-binaries).
 
 ## The `vay` script
 
 `vay` works similarly to AUR helpers on Arch Linux.
-It automatically clones both this repository and the upstream void-packages repository, copies the template files, builds the packages locally on your machine, and installs them. This can also be used to easily install nonfree packages (discord, spotify, etc.), that are not distrubted as binaries by Voidlinux.
+Automatically performs the actions needed to build the packages locally on your system.
+If you prefer to do this manually go to [Manually building](#manually-building)
 
 ## Installation
 
@@ -24,7 +27,7 @@ git clone https://github.com/Encoded14/void-user-repository.git
 ```
 cd void-user-repository
 ```
-3. Create ~/.local/bin if it doesn’t already exist:
+3. Create `~/.local/bin` if it doesn’t already exist:
 ```
 mkdir -p ~/.local/bin
 ```
@@ -37,7 +40,7 @@ ln -sf "$(realpath vay.sh)" "$HOME/.local/bin/vay"
 vay <package1> <package2> ...
 ```
 
-## Using prebuilt binaries
+## Prebuilt binaries
 
 Currently prebuilt binary packages are provided for the following architectures:
 - x86_64-glibc
@@ -55,6 +58,31 @@ sudo xbps-install -S
 ```
 xbps-query -Rs hypr
 sudo xbps-install -S hyprland 
+```
+
+## Manually building
+1. Clone both this repository as well as [void-packages](https://github.com/void-linux/void-packages):
+```
+git clone https://github.com/Encoded14/void-user-repository.git
+git clone https://github.com/void-linux/void-packages.git
+```
+2. Copy the templates files from this repository into void-packages:
+```
+cp -r void-user-repository/srcpkgs/* void-packages/srcpkgs/ 2>/dev/null || true
+```
+3. Edit shlibs by removing the lines found in shlibs_remove and appending the lines from shlibs_append.
+4. Bootstrap the build system:
+```
+cd void-packages
+./xbps-src binary-bootstrap
+```
+5. Build the packages you want:
+```
+./xbps-src pkg <package1> <package2> ...
+```
+6. Install the built packages:
+```
+sudo xbps-install --repository /hostdir/binpkgs/ <package1> <package2> ...
 ```
 
 ### Running Hyprland
