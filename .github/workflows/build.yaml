@@ -149,7 +149,7 @@ jobs:
         with:
           name: binpkgs-${{ matrix.target }}
           path: |
-            void-packages/hostdir/binpkgs/*.xbps
+            void-packages/hostdir/binpkgs/*.xbps*
             void-packages/hostdir/binpkgs/*repodata*
           retention-days: 3
 
