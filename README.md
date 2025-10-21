@@ -15,7 +15,7 @@ If you dont wish to build the packages locally, this repository also provides pr
 
 `vay` works similarly to AUR helpers on Arch Linux.
 Automatically performs the actions needed to build the packages locally on your system.
-If you prefer to do this manually go to [Manually building](#manually-building).
+If you prefer to do this manually go to [Manually building](#manually-building).  
 Note: this script not only works for the extra template files provided in this repository but also for packages not distrubted in the Voidlinux mirrors such as nonfree packages (discord, spotify, etc.)
 
 ## Installation
@@ -94,5 +94,5 @@ In order to run Hyprland you will need to install some additional packages which
 Contributions are greatly appreciated. Overall, this repository adheres to the same rules and guidelines as the [official void-packages repository](https://github.com/void-linux/void-packages/blob/master/CONTRIBUTING.md). The main difference is that here, you’re welcome to add template files for Chromium or Firefox forks if they provide additional value beyond changing certain settings or configuration files.
 
 ### Credits
-[Makrennel: hyprland-void](https://github.com/Makrennel/hyprland-void): Hyprland template files
+[Makrennel: hyprland-void](https://github.com/Makrennel/hyprland-void): Hyprland template files  
 [grvn: void-packages](https://github.com/grvn/void-packages): various template files
