@@ -95,3 +95,4 @@ Contributions are greatly appreciated. Overall, this repository adheres to the s
 
 ### Credits
 [Makrennel: hyprland-void](https://github.com/Makrennel/hyprland-void): Hyprland template files
+[grvn: void-packages](https://github.com/grvn/void-packages): various template files
