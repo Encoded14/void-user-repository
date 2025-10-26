@@ -3,7 +3,6 @@ pkgname=hyprland-protocols
 version=0.7.0
 revision=1
 build_style=meson
-hostmakedepends="wayland-devel"
 short_desc="Wayland protocol extensions for Hyprland"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
