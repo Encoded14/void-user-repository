@@ -11,6 +11,13 @@ A collection of template files for building packages on Void Linux.
 Includes a helper script, vay, which simplifies local package building and installation.
 If you dont wish to build the packages locally, this repository also provides prebuilt binaries in the releases. Information on how to easily download and install them go to [Prebuilt binaries](#prebuilt-binaries).
 
+## Available packages
+| package | version | maintainer |
+|:--------|:-------|:-----------------|
+| hyprland + ecosystem | 0.51.1  | [Encoded14](https://github.com/Encoded14) |
+| ly                   | 1.0.3   | [Encoded14](https://github.com/Encoded14) |
+| zen-browser (stable) | 1.17.3b | [Encoded14](https://github.com/Encoded14) |
+
 ## The `vay` script
 
 `vay` works similarly to AUR helpers on Arch Linux.
