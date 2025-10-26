@@ -5,8 +5,9 @@ revision=1
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
 hostmakedepends="cmake pkgconf"
-makedepends="hyprland-qt-support hyprutils polkit-qt6-devel 
+makedepends="hyprutils polkit-qt6-devel 
  qt6-base-devel qt6-declarative-devel"
+depends="hyprland-qt-support"
 short_desc="Simple polkit authentication agent for Hyprland, written in QT/QML"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
