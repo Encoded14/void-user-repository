@@ -5,9 +5,8 @@ revision=1
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
 hostmakedepends="cmake hyprwayland-scanner pkgconf"
-makedepends="hwids hyprutils hyprwayland-scanner libdisplay-info-devel 
- libinput-devel libseat-devel MesaLib-devel pixman-devel wayland-devel 
- wayland-protocols"
+makedepends="hwids hyprutils libdisplay-info-devel libinput-devel 
+ libseat-devel MesaLib-devel pixman-devel wayland-devel wayland-protocols"
 short_desc="Aquamarine is a very light linux rendering backend library"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="LGPL-3.0-only"
