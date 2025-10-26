@@ -5,13 +5,12 @@ revision=2
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release \ 
  -DCMAKE_INSTALL_PREFIX:PATH=/usr -DNO_SYSTEMD:BOOL=true"
-hostmakedepends="cmake cpio gcc glslang hyprwayland-scanner jq make
- meson ninja pkgconf wayland-devel xxd"
+hostmakedepends="cmake cpio glslang hyprwayland-scanner jq pkgconf wayland-protocols xxd"
 makedepends="aquamarine cairo-devel glaze hwids hyprcursor
  hyprgraphics hyprlang hyprutils libdisplay-info-devel libdrm-devel
  libgbm-devel libglvnd-devel libinput-devel libliftoff-devel libseat-devel
  libxcb-devel libXcursor-devel libxkbcommon-devel pango-devel re2-devel
- tomlplusplus wayland-devel wayland-protocols xcb-util-errors-devel
+ tomlplusplus wayland-devel xcb-util-errors-devel
  xcb-util-renderutil-devel xcb-util-wm-devel xorg-server-xwayland"
 short_desc="Dynamic tiling Wayland compositor that doesn't sacrifice on its looks"
 maintainer="Encoded14 <linusken@tuta.io>"
