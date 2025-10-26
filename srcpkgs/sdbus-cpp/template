@@ -3,9 +3,8 @@ pkgname=sdbus-cpp
 version=2.1.0
 revision=1
 build_style=cmake
-hostmakedepends="pkgconf m4 rsync gperf"
-makedepends="elogind elogind-devel libcap-devel
- libelogind libmount-devel"
+hostmakedepends="pkgconf"
+makedepends="elogind-devel"
 short_desc="High-level C++ D-Bus library to provide API in modern C++"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="LGPL-2.1-only"
