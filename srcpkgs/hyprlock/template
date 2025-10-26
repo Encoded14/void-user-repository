@@ -4,11 +4,10 @@ version=0.9.2
 revision=1
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release"
-hostmakedepends="cmake hyprwayland-scanner pkgconf wayland-devel wayland-protocols"
+hostmakedepends="cmake hyprwayland-scanner pkgconf wayland-protocols"
 makedepends="cairo-devel elogind-devel file-devel hyprgraphics hyprlang
- hyprutils hyprwayland-scanner libdrm-devel libjpeg-turbo-devel libwebp-devel
- libxkbcommon-devel MesaLib-devel pam-devel pango-devel sdbus-cpp
- wayland-devel wayland-protocols"
+ hyprutils libdrm-devel libjpeg-turbo-devel libwebp-devel libxkbcommon-devel 
+ MesaLib-devel pam-devel pango-devel sdbus-cpp wayland-devel"
 short_desc="Hyprland's GPU-accelerated screen locking utility"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
