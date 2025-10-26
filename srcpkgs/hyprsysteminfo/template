@@ -4,9 +4,9 @@ version=0.1.3
 revision=2
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
-hostmakedepends="cmake pkgconf qt6-tools-devel"
-makedepends="hyprland-qt-support hyprutils qt6-base-devel 
- qt6-base-private-devel qt6-declarative-devel qt6-declarative-private-devel 
+hostmakedepends="cmake pkgconf"
+makedepends="hyprland-qt-support hyprutils qt6-base-devel qt6-base-private-devel 
+ qt6-declarative-devel qt6-declarative-private-devel qt6-tools-devel
  qt6-wayland-devel qt6-wayland-private-devel"
 short_desc="A tiny qt6/qml application to display information about the running system"
 maintainer="Encoded14 <linusken@tuta.io>"
