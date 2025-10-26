@@ -5,8 +5,9 @@ revision=3
 build_style=cmake
 configure_args=" --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
 hostmakedepends="cmake pkgconf"
-makedepends="hyprutils hyprland-qt-support qt6-base-devel 
- qt6-declarative-devel qt6-wayland-devel qt6-wayland-private-devel"
+makedepends="hyprutils qt6-base-devel qt6-declarative-devel 
+ qt6-wayland-devel qt6-wayland-private-devel"
+depends="hyprland-qt-support"
 short_desc="Qt/QML utility apps for Hyprland"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
