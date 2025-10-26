@@ -4,10 +4,9 @@ version=0.7.5
 revision=2
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
-hostmakedepends="cmake pkgconf wayland-devel hyprutils hyprwayland-scanner"
+hostmakedepends="cmake pkgconf hyprwayland-scanner hyprland-protocols wayland-protocols"
 makedepends="cairo-devel file-devel libjpeg-turbo-devel libwebp-devel
- hyprgraphics hyprland-protocols hyprlang hyprwayland-scanner
- pango-devel wayland-devel wayland-protocols wlroots-devel"
+ hyprgraphics hyprutils hyprlang pango-devel wlroots-devel"
 short_desc="Fast wallpaper utility for wlroots compositors with IPC controls"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
