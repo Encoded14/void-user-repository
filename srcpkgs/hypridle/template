@@ -4,9 +4,8 @@ version=0.1.7
 revision=3
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DNO_SYSTEMD:BOOL=true"
-hostmakedepends="cmake hyprwayland-scanner pkgconf wayland-devel wayland-protocols"
-makedepends="elogind-devel hyprland-protocols hyprlang 
- hyprwayland-scanner sdbus-cpp wayland-devel wayland-protocols"
+hostmakedepends="cmake hyprwayland-scanner hyprland-protocols pkgconf wayland-protocols"
+makedepends="elogind-devel hyprlang sdbus-cpp wayland-devel"
 short_desc="Hyprland's idle daemon"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
