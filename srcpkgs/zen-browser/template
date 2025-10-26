@@ -1,6 +1,6 @@
 # Template file for 'zen-browser'
 pkgname=zen-browser
-version="1.17.2b"
+version="1.17.3b"
 revision=1
 archs="x86_64"
 hostmakedepends="curl xz"
@@ -11,7 +11,7 @@ license="MPL-2.0"
 homepage="https://www.zen-browser.app/"
 changelog="https://github.com/zen-browser/desktop/releases"
 distfiles="https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz"
-checksum=6b67765783a86afda56413e6c330be4df965312073299f545ba724f1f97cc1fa
+checksum=af6769492f8179f30d681c17777de1da79a6b1a44c97a1cb6a0340d497b19eb7
 
 do_install() {
     install -dm755 "${DESTDIR}/opt/${pkgname}" "${DESTDIR}/usr/bin" "${DESTDIR}/usr/share/applications" "${DESTDIR}/usr/share/pixmaps"
