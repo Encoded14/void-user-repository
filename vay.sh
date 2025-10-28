@@ -73,17 +73,12 @@ clone_or_update "$EXTRA_REPO_URL" "$EXTRA_REPO_DIR" "extra templates repo"
 
 cd "$VOID_PKGS_DIR"
 
-# Reset to a pristine, up-to-date master every run
-echo "=> Resetting repository to latest master..."
-git fetch --prune origin master
-git switch -C master origin/master
-
 # Apply custom edits
 echo "=> Applying inline edits..."
 rm -rf srcpkgs/hyprutils/patches
 
-# Copy templates from your extra repo
-echo "=> Copying templates from extra repo..."
+# Copy templates from void-user-repository
+echo "=> Copying templates from void-user-repository..."
 cp -r "$EXTRA_REPO_DIR"/srcpkgs/* ./srcpkgs/ 2>/dev/null || true
 
 # Edit common/shlibs
@@ -117,8 +112,10 @@ sudo xbps-install -S \
     --repository "$VOID_PKGS_DIR/hostdir/binpkgs/nonfree" \
     "$@"
 
-# Clean up changes to keep repo pristine
+# Clean up changes
 echo "=> Reverting all local edits..."
-git restore . 2>/dev/null || true
+git fetch --prune origin
+git reset --hard origin/master
+git clean -fd
 
 echo "=> All done! Packages installed successfully."
