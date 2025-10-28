@@ -18,9 +18,53 @@ If you dont wish to build the packages locally, this repository also provides pr
 | ly                   | 1.0.3   | [Encoded14](https://github.com/Encoded14) |
 | zen-browser (stable) | 1.17.3b | [Encoded14](https://github.com/Encoded14) |
 
+## Manually building
+1. Clone both this repository as well as [void-packages](https://github.com/void-linux/void-packages):
+```
+git clone https://github.com/Encoded14/void-user-repository.git
+git clone https://github.com/void-linux/void-packages.git
+```
+2. Copy the templates files from this repository into void-packages:
+```
+cp -r void-user-repository/srcpkgs/* void-packages/srcpkgs/
+```
+3. Edit shlibs by removing the lines found in shlibs_remove and appending the lines from shlibs_append.
+4. Bootstrap the build system:
+```
+cd void-packages
+./xbps-src binary-bootstrap
+```
+5. Build the packages you want:
+```
+./xbps-src pkg <package1> <package2> ...
+```
+6. Install the built packages:
+```
+sudo xbps-install --repository /hostdir/binpkgs/ <package1> <package2> ...
+```
+
+## Prebuilt binaries
+
+Currently prebuilt binary packages are provided for the following architectures:
+- x86_64-glibc
+- x86_64-musl
+
+1. Create an entry in /etc/xbps.d/ and add this repository. This can be done with the following command:
+```
+echo repository=https://github.com/Encoded14/void-user-repository/releases/latest/download | sudo tee /etc/xbps.d/20-void-user-repository.conf
+```
+2. Refresh your repositories and accept the fingerprint:
+```
+sudo xbps-install -S
+```
+3. You are now able to search through all of the packages in this repository, and install them as usual:
+```
+xbps-query -Rs hypr
+sudo xbps-install -S hyprland 
+```
+
 ## The `vay` script
 
-`vay` works similarly to AUR helpers on Arch Linux.
 Automatically performs the actions needed to build the packages locally on your system.
 If you prefer to do this manually go to [Manually building](#manually-building).  
 Note: this script not only works for the extra template files provided in this repository but also for packages not distrubted in the Voidlinux mirrors such as nonfree packages (discord, spotify, etc.)
@@ -46,51 +90,6 @@ ln -sf "$(realpath vay.sh)" "$HOME/.local/bin/vay"
 5. Run the helper by typing vay followed by one or more package names:
 ```
 vay <package1> <package2> ...
-```
-
-## Prebuilt binaries
-
-Currently prebuilt binary packages are provided for the following architectures:
-- x86_64-glibc
-- x86_64-musl
-
-1. Create an entry in /etc/xbps.d/ and add this repository. This can be done with the following command:
-```
-echo repository=https://github.com/Encoded14/void-user-repository/releases/latest/download | sudo tee /etc/xbps.d/20-void-user-repository.conf
-```
-2. Refresh your repositories and accept the fingerprint:
-```
-sudo xbps-install -S
-```
-3. You are now able to search through all of the packages in this repository, and install them as usual:
-```
-xbps-query -Rs hypr
-sudo xbps-install -S hyprland 
-```
-
-## Manually building
-1. Clone both this repository as well as [void-packages](https://github.com/void-linux/void-packages):
-```
-git clone https://github.com/Encoded14/void-user-repository.git
-git clone https://github.com/void-linux/void-packages.git
-```
-2. Copy the templates files from this repository into void-packages:
-```
-cp -r void-user-repository/srcpkgs/* void-packages/srcpkgs/
-```
-3. Edit shlibs by removing the lines found in shlibs_remove and appending the lines from shlibs_append.
-4. Bootstrap the build system:
-```
-cd void-packages
-./xbps-src binary-bootstrap
-```
-5. Build the packages you want:
-```
-./xbps-src pkg <package1> <package2> ...
-```
-6. Install the built packages:
-```
-sudo xbps-install --repository /hostdir/binpkgs/ <package1> <package2> ...
 ```
 
 ### Running Hyprland
