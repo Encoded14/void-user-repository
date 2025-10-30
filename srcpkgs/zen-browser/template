@@ -25,10 +25,10 @@ do_install() {
     install -dm755 "${DESTDIR}/opt/${pkgname}/distribution"
     vinstall ${FILESDIR}/policies.json 644 "opt/${pkgname}/distribution/"
 
-    vinstall browser/chrome/icons/default/default48.png 0644 usr/share/pixmaps zen-browser.png
+    vinstall browser/chrome/icons/default/default48.png 0644 usr/share/pixmaps zen.png
     for size in 16 32 48 64 128; do
         install -d ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps
-        vinstall browser/chrome/icons/default/default${size}.png 0644 usr/share/icons/hicolor/${size}x${size}/apps zen-browser.png
+        vinstall browser/chrome/icons/default/default${size}.png 0644 usr/share/icons/hicolor/${size}x${size}/apps zen.png
     done
 
     ln -Ts /usr/share/hunspell "${DESTDIR}/opt/${pkgname}/dictionaries"
