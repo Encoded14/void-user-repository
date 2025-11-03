@@ -4,8 +4,9 @@ version=0.3.3
 revision=1
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
-hostmakedepends="cmake hyprland-protocols hyprwayland-scanner pkgconf wayland-protocols"
-makedepends="hyprland hyprutils wayland-devel"
+hostmakedepends="cmake hyprwayland-scanner pkgconf"
+makedepends="hyprland-protocols hyprlang hyprutils 
+ hyprwayland-scanner wayland-devel wayland-protocols"
 short_desc="An application to enable a blue-light filter on Hyprland"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
