@@ -2,44 +2,63 @@ name: build
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+        - master
+    paths:
+        - 'srcpkgs/**'
   workflow_dispatch:
+
 
 jobs:
   build:
+    name: Build packages
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/void-linux/void-${{ matrix.config.libc }}-full:20250616R1
+      options: --platform ${{ matrix.config.platform }} --privileged
+      volumes:
+        - /dev:/dev
+      env:
+        ARCH: '${{ matrix.config.arch }}'
+        BOOTSTRAP: '${{ matrix.config.host }}'
+        TEST: '${{ matrix.config.test }}'
     strategy:
-      max-parallel: 4
+      fail-fast: false
       matrix:
-        include:
-          - { host: x86_64, target: x86_64 }
-          - { host: x86_64-musl, target: x86_64-musl }
-    runs-on: ubuntu-22.04
+        config:
+          - { arch: x86_64,       host: x86_64,      libc: glibc, platform: linux/amd64, test: 1 }
+          - { arch: aarch64,      host: x86_64,      libc: glibc, platform: linux/amd64, test: 0 }
+          - { arch: x86_64-musl,  host: x86_64-musl, libc: musl,  platform: linux/amd64, test: 1 }
+          - { arch: aarch64-musl, host: x86_64-musl, libc: musl,  platform: linux/amd64, test: 0 }
+
     permissions:
       contents: write
 
     steps:
-      - name: free space
+      - name: Prepare container
         run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          # switch to repo-ci mirror
+          mkdir -p /etc/xbps.d && cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+          sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
+          # install dependencies
+          xbps-install -Syu xbps && xbps-install -yu && xbps-install -y sudo bash curl git
+          # create non-root user
+          useradd -G xbuilder -M builder
 
-      - name: checkout this repo
-        uses: actions/checkout@v4
-        with:
-          ref: master
-          path: extra
+      - name: Checkout this repo
+        run: |
+          git clone --depth 1 "https://github.com/${{ github.repository }}.git" extra
+          cd extra
+          git fetch --no-tags origin "${{ github.sha }}" --depth 1
+          git checkout --detach "${{ github.sha }}"
 
-      - name: checkout void-packages
-        uses: actions/checkout@v4
-        with:
-          repository: void-linux/void-packages
-          ref: master
-          path: void-packages
+      - name: Checkout void-packages
+        run: |
+          git clone https://github.com/void-linux/void-packages.git void-packages
+          cd void-packages
+          git checkout --detach master
 
-      - name: merge templates and edit shlibs
+      - name: Merge templates and edit shlibs
         run: |
           echo "==> copying templates..."
           cp -rv extra/srcpkgs/* void-packages/srcpkgs/
@@ -72,53 +91,48 @@ jobs:
               echo "   - removing void-packages/srcpkgs/hyprutils/patches"
               rm -rf void-packages/srcpkgs/hyprutils/patches
           fi
-      
-      - name: prepare xbps-static
-        run: |
-          mkdir -p /opt/xbps
-          curl -LO http://repo-default.voidlinux.org/static/xbps-static-latest.x86_64-musl.tar.xz
-          tar xvf xbps-static-latest.x86_64-musl.tar.xz -C /opt/xbps
-          rm xbps-static-latest.x86_64-musl.tar.xz
 
-      - name: build
-        env:
-          XBPS_TARGET_ARCH: ${{ matrix.target }}
+      - name: Prepare masterdir
+        run: |
+          cd void-packages
+          chown -R builder:builder . &&
+          sudo -Eu builder common/travis/set_mirror.sh &&
+          sudo -Eu builder common/travis/prepare.sh &&
+          common/travis/fetch-xtools.sh
+
+      - name: Build
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
-          echo "==> templates found:"
-          find void-packages/srcpkgs -maxdepth 1 -mindepth 1 -type d
           cd void-packages
-
-          if [[ "${{ matrix.host }}" == "${{ matrix.target }}" ]]; then
-            ./xbps-src -A ${{ matrix.host }} binary-bootstrap
-          else
-            ./xbps-src -a ${{ matrix.target }} -A ${{ matrix.host }} binary-bootstrap
-          fi
-
-          if [[ "${{ matrix.target }}" == aarch64* ]]; then
-            echo "==> bootstrapping cross toolchain for ${{ matrix.target }}"
-            ./xbps-src -A ${{ matrix.host }} pkg cross-vpkg-dummy
-            ./xbps-src -A ${{ matrix.host }} pkg cross-aarch64-linux-gnu
-          fi
-
           pkgs=$(find ../extra/srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
-          echo "==> sorting dependencies..."
-          sorted=$(./xbps-src sort-dependencies $pkgs)
-          echo "==> build order:"
-          printf '%s\n' $sorted
+          
+          if [ "$BOOTSTRAP" != "$ARCH" ]; then
+              arch="-a $ARCH"
+          fi
 
-          failed=()
+          if [ "$TEST" = 1 ]; then
+              test="-Q"
+          fi
 
-          for pkg in $sorted; do
-            echo "==> building $pkg"
-            if [[ "${{ matrix.host }}" == "${{ matrix.target }}" ]]; then
-              ./xbps-src pkg -j$(nproc) -A ${{ matrix.host }} "$pkg" || failed+=("$pkg")
-            else
-              ./xbps-src pkg -j$(nproc) -a ${{ matrix.target }} -A ${{ matrix.host }} "$pkg" || failed+=("$pkg")
+          PKGS=$(sudo -Eu builder ./xbps-src $test sort-dependencies $pkgs)
+          failed=""
+
+          for pkg in ${PKGS}; do
+            if ! sudo -Eu builder ./xbps-src -j"$(nproc)" -s $arch $test pkg "${pkg}"; then
+              echo "!! build failed for ${pkg}"
+              failed="${failed} ${pkg}"
             fi
           done
 
-      - name: sign
+          if [ -n "${failed}" ]; then
+            echo
+            echo "These packages failed:"
+            for f in ${failed}; do
+                echo "  - ${f}"
+            done
+          fi
+
+      - name: Sign
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           XBPS_ARCH: ${{ matrix.target }}
@@ -144,36 +158,30 @@ jobs:
           echo "==> cleaning up private key..."
           rm -f private.pem
 
-      - name: upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: binpkgs-${{ matrix.target }}
-          path: |
-            void-packages/hostdir/binpkgs/*.xbps*
-            void-packages/hostdir/binpkgs/*repodata*
-          retention-days: 3
+      - name: Set release tag
+        id: set_tag
+        run: echo "tag=build-$(date +'%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"
 
-  release:
-    needs: build
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: write
-    steps:
-      - name: download all build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: set release tag
-        run: echo "TAG=build-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
-
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+      - name: Push binpkgs branch (per arch)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.TAG }}
-          name: ${{ env.TAG }}
-          files: artifacts/**/*
-          overwrite_files: true
-          fail_on_unmatched_files: false
+            REPO_OWNER: ${{ github.repository_owner }}
+            REPO_NAME: ${{ github.event.repository.name }}
+            ACCESS_GIT: ${{ secrets.ACCESS_GIT }}
+            RESULT_NAME: ${{ matrix.config.arch }}
+        run: |
+          cd extra
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          BRANCH="repository-${RESULT_NAME}"
+          REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
+
+          # Delete old binary repository, create new one
+          git push "$REMOTE" -d "$BRANCH" || true
+          git switch --orphan "$BRANCH"
+
+          # Populate and push new binary repository
+          cp ../void-packages/hostdir/binpkgs/* ./
+          git add .
+          git commit -m "Upload latest packages to repository"
+          git push -f "$REMOTE" "$BRANCH"
