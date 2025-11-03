@@ -120,6 +120,12 @@ Note: this script not only works for the extra template files provided in this r
 <hr>
 
 ## Available packages
+
+> [!TIP]
+> Want to add one of your own templates? Open a Pull request.
+> 
+> Need a package that is not allowed in upstream? Open an Issue.
+
 | package | version: current | version: latest | maintainer | notes |
 |:--------|:-----------------|:----------------|:-----------|:------|
 | aquamarine                  | 0.9.5   | 0.9.5   | [Encoded14](https://github.com/Encoded14) | |
