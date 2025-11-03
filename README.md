@@ -126,32 +126,32 @@ Note: this script not only works for the extra template files provided in this r
 > 
 > Need a package that is not allowed in upstream? Open an Issue.
 
-| package | version: current | version: latest | maintainer | notes |
-|:--------|:-----------------|:----------------|:-----------|:------|
-| aquamarine                  | 0.9.5   | 0.9.5   | [Encoded14](https://github.com/Encoded14) | |
-| glaze                       | 6.0.1   | 6.0.1   | [Encoded14](https://github.com/Encoded14) | |
-| hyprcursor                  | 0.1.13  | 0.1.13  | [Encoded14](https://github.com/Encoded14) | |
-| hyprgraphics                | 0.2.0   | 0.2.0   | [Encoded14](https://github.com/Encoded14) | |
-| hypridle                    | 0.1.7   | 0.1.7   | [Encoded14](https://github.com/Encoded14) | |
-| hyprland-protocols          | 0.7.0   | 0.7.0   | [Encoded14](https://github.com/Encoded14) | |
-| hyprland-qt-support         | 0.1.0   | 0.1.0   | [Encoded14](https://github.com/Encoded14) | |
-| hyprland-qtutils            | 0.1.5   | 0.1.5   | [Encoded14](https://github.com/Encoded14) | |
-| hyprland                    | 0.51.1  | 0.51.1  | [Encoded14](https://github.com/Encoded14) | |
-| hyprlang                    | 0.6.4   | 0.6.4   | [Encoded14](https://github.com/Encoded14) | |
-| hyprlock                    | 0.9.2   | 0.9.2   | [Encoded14](https://github.com/Encoded14) | |
-| hyprpaper                   | 0.7.5   | 0.7.5   | [Encoded14](https://github.com/Encoded14) | |
-| hyprpicker                  | 0.4.5   | 0.4.5   | [Encoded14](https://github.com/Encoded14) | |
-| hyprpolkitagent             | 0.1.3   | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
-| hyprsunset                  | 0.3.3   | 0.3.3   | [Encoded14](https://github.com/Encoded14) | |
-| hyprsysteminfo              | 0.1.3   | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
-| hyprutils                   | 0.10.0  | 0.10.0  | [Encoded14](https://github.com/Encoded14) | |
-| hyprwayland-scanner         | 0.4.5   | 0.4.5   | [Encoded14](https://github.com/Encoded14) | |
-| xdg-desktop-portal-hyprland | 3.4.0   | 3.4.0   | [Encoded14](https://github.com/Encoded14) | |
-| libspng                     | 0.7.4   | 0.7.4   | [Encoded14](https://github.com/Encoded14) | |
-| sdbus-cpp                   | 2.1.0   | 2.1.0   | [Encoded14](https://github.com/Encoded14) | |
-| tomlplusplus                | 3.4.0   | 3.4.0   | [Encoded14](https://github.com/Encoded14) | |
-| ly                          | 1.0.3   | 1.0.3   | [Encoded14](https://github.com/Encoded14) | compatibility: x86_64 only |
-| zen-browser (stable)        | 1.17.4b | 1.17.4b | [Encoded14](https://github.com/Encoded14) | compatibility: glibc only |
+| package | version | maintainer | notes |
+|:--------|:--------|:-----------|:------|
+| aquamarine                  | 0.9.5   | [Encoded14](https://github.com/Encoded14) | |
+| glaze                       | 6.0.1   | [Encoded14](https://github.com/Encoded14) | |
+| hyprcursor                  | 0.1.13  | [Encoded14](https://github.com/Encoded14) | |
+| hyprgraphics                | 0.2.0   | [Encoded14](https://github.com/Encoded14) | |
+| hypridle                    | 0.1.7   | [Encoded14](https://github.com/Encoded14) | |
+| hyprland-protocols          | 0.7.0   | [Encoded14](https://github.com/Encoded14) | |
+| hyprland-qt-support         | 0.1.0   | [Encoded14](https://github.com/Encoded14) | |
+| hyprland-qtutils            | 0.1.5   | [Encoded14](https://github.com/Encoded14) | |
+| hyprland                    | 0.51.1  | [Encoded14](https://github.com/Encoded14) | |
+| hyprlang                    | 0.6.4   | [Encoded14](https://github.com/Encoded14) | |
+| hyprlock                    | 0.9.2   | [Encoded14](https://github.com/Encoded14) | |
+| hyprpaper                   | 0.7.5   | [Encoded14](https://github.com/Encoded14) | |
+| hyprpicker                  | 0.4.5   | [Encoded14](https://github.com/Encoded14) | |
+| hyprpolkitagent             | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
+| hyprsunset                  | 0.3.3   | [Encoded14](https://github.com/Encoded14) | |
+| hyprsysteminfo              | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
+| hyprutils                   | 0.10.0  | [Encoded14](https://github.com/Encoded14) | |
+| hyprwayland-scanner         | 0.4.5   | [Encoded14](https://github.com/Encoded14) | |
+| xdg-desktop-portal-hyprland | 3.4.0   | [Encoded14](https://github.com/Encoded14) | |
+| libspng                     | 0.7.4   | [Encoded14](https://github.com/Encoded14) | |
+| sdbus-cpp                   | 2.1.0   | [Encoded14](https://github.com/Encoded14) | |
+| tomlplusplus                | 3.4.0   | [Encoded14](https://github.com/Encoded14) | |
+| ly                          | 1.0.3   | [Encoded14](https://github.com/Encoded14) | compatibility: x86_64 only |
+| zen-browser (stable)        | 1.17.4b | [Encoded14](https://github.com/Encoded14) | compatibility: glibc only |
 
 <hr>
 
