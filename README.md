@@ -8,10 +8,10 @@ Use at your own discretion.
 ## Overview
 A collection of template files for building packages on Void Linux.
 Includes a helper script, vay, which simplifies local package building and installation.
-If you don't wish to build the packages locally, this repository also provides prebuilt binaries in the releases.
+If you don't wish to build the packages locally, this repository also provides prebuilt binaries.
 
 > [!WARNING]
-> Prebuilt binaries have moved from releases to a branch based system. Check below on how to update your /etc/xbps.d/ entry.
+> Prebuilt binaries have moved from releases to a branch-based system. Check below on how to update your /etc/xbps.d/ entry.
 
 <hr>
 
@@ -30,7 +30,7 @@ Currently packages are tested on / crosscompiled for the following architectures
 - aarch64-musl
 
 <details>
-<summary><b>  Manually building </b></summary>
+<summary><b> 🛠️ Manually building </b></summary>
   
 1. Clone both this repository as well as [void-packages](https://github.com/void-linux/void-packages):
 
@@ -38,24 +38,29 @@ Currently packages are tested on / crosscompiled for the following architectures
     git clone https://github.com/Encoded14/void-user-repository.git
     git clone https://github.com/void-linux/void-packages.git
     ```
-2. Copy the templates files from this repository into void-packages:
+2. Copy the template files from this repository into void-packages:
+
     ```
     cp -r void-user-repository/srcpkgs/* void-packages/srcpkgs/
     ```
 3. Edit shlibs by removing the lines found in shlibs_remove and appending the lines from shlibs_append.
+
     ```
     cd void-packages
     nvim common/shlibs
     ```
 4. Bootstrap the build system:
+
     ```
     ./xbps-src binary-bootstrap
     ```
 5. Build the packages you want:
+
     ```
     ./xbps-src pkg <package1> <package2> ...
     ```
 6. Install the built packages:
+
     ```
     sudo xbps-install --repository /hostdir/binpkgs/ <package1> <package2> ...
     ```
@@ -63,28 +68,19 @@ Currently packages are tested on / crosscompiled for the following architectures
 </details>
 
 <details>
-<summary><b> Prebuilt binaries </b></summary>
+<summary><b> 📦 Prebuilt binaries </b></summary>
 
-Currently prebuilt binary packages are provided for the following architectures:
-- x86_64
-- x86_64-musl
-- aarch64
-- aarch64-musl
-
-Edit the end of the link with the architecture you require:
-```
-repository=https://raw.githubusercontent.com/Encoded14/void-user-repository/repository-x86_64
-```
-
-1. Create an entry in /etc/xbps.d/ and add this repository. This can be done with the following command:
+1. Create an entry in /etc/xbps.d/ and add this repository. (Edit the end of the link with the architecture you require from the list above). This can be done with the following command:
     ```
     echo repository=https://raw.githubusercontent.com/Encoded14/void-user-repository/repository-x86_64 | sudo tee /etc/xbps.d/20-void-user-repository.conf
     ```
 2. Refresh your repositories and accept the fingerprint:
+
     ```
     sudo xbps-install -S
     ```
 3. You are now able to search through all of the packages in this repository, and install them as usual:
+
     ```
     xbps-query -Rs hypr
     sudo xbps-install -S hyprland 
@@ -93,7 +89,7 @@ repository=https://raw.githubusercontent.com/Encoded14/void-user-repository/repo
 </details>
 
 <details>
-<summary><b> The vay script </b></summary>
+<summary><b> 🧪 The vay script </b></summary>
 
 Automatically performs the actions needed to build the packages locally on your system.
 Note: this script not only works for the extra template files provided in this repository but also for packages not distributed in the Voidlinux mirrors such as nonfree packages (discord, spotify, etc.).
@@ -101,22 +97,27 @@ Note: this script not only works for the extra template files provided in this r
 > **Security conscious?**  You can review the script [here](https://raw.githubusercontent.com/Encoded14/void-user-repository/refs/heads/master/vay.sh) before running it. Furthermore, instead of symlinking the script, you can move it into a directory in your $PATH. That way you ensure it won’t change when you update this repository.
 
 1. Start by cloning this repository.
+
     ```
     git clone https://github.com/Encoded14/void-user-repository.git
     ```
 2. Change into the cloned directory:
+
     ```
     cd void-user-repository
     ```
 3. Create `~/.local/bin` if it doesn’t already exist:
+
     ```
     mkdir -p ~/.local/bin
     ```
 4. Symlink the helper script:
+
     ```
     ln -sf "$(realpath vay.sh)" "$HOME/.local/bin/vay"
     ```
 5. Run the helper by typing vay followed by one or more package names:
+
     ```
     vay <package1> <package2> ...
     ```
