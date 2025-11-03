@@ -4,10 +4,11 @@ version=1.3.11
 revision=1
 build_style=cmake
 configure_args=" --no-warn-unused-cli -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBEXECDIR:PATH=/usr/libexec"
-hostmakedepends="cmake hyprland-protocols hyprwayland-scanner pkgconf scdoc wayland-protocols"
-makedepends="elogind-devel hyprlang hyprutils libgbm-devel
- libdrm-devel pipewire-devel qt6-base-devel
- qt6-wayland-devel sdbus-cpp wayland-devel"
+hostmakedepends="cmake git hyprwayland-scanner pkgconf
+ qt6-base-devel scdoc wayland-protocols"
+makedepends="elogind-devel hyprland-protocols hyprlang hyprutils
+ hyprwayland-scanner libgbm-devel libdrm-devel pipewire-devel
+ qt6-base-devel qt6-wayland-devel sdbus-cpp wayland-devel"
 depends="xdg-desktop-portal"
 short_desc="Backend of xdg-desktop-portal for Hyprland"
 maintainer="Encoded14 <linusken@tuta.io>"
