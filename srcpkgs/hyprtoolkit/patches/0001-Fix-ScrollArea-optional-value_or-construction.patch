@@ -1,0 +1,17 @@
+--- a/src/element/scrollArea/ScrollArea.cpp
++++ b/src/element/scrollArea/ScrollArea.cpp
+@@ -6,11 +6,11 @@ void SScrollAreaImpl::clampMaxScroll() {
+ 
+     Vector2D scrollMax = (self->impl->children.at(0)
+                               ->preferredSize({
+-                                  data.scrollX ? 99999999999 : self->impl->position.w,
+-                                  data.scrollY ? 99999999999 : self->impl->position.h,
++                                  data.scrollX ? 99999999999 : self->impl->position.w,
++                                  data.scrollY ? 99999999999 : self->impl->position.h,
+                               })
+-                              .value_or({99999999, 99999999}) -
++                              .value_or(Hyprutils::Math::Vector2D{99999999.0, 99999999.0}) -
+                           self->impl->position.size())
+                              .clamp({0, 0});
+ 
+     data.currentScroll = data.currentScroll.clamp({}, scrollMax);
