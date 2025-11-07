@@ -65,7 +65,7 @@ Currently packages are tested on / crosscompiled for the following architectures
 
 1. Create an entry in /etc/xbps.d/ and add this repository. (Edit the end of the link with the architecture you require from the list above). This can be done with the following command:
     ```
-    echo repository=https://raw.githubusercontent.com/Encoded14/void-user-repository/repository-x86_64 | sudo tee /etc/xbps.d/20-void-user-repository.conf
+    echo repository=https://raw.githubusercontent.com/Encoded14/void-user-repository/repository-x86_64 | sudo tee /etc/xbps.d/20-repository-extra.conf
     ```
 2. Refresh your repositories and accept the fingerprint:
 
