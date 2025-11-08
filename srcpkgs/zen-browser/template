@@ -13,11 +13,11 @@ changelog="https://github.com/zen-browser/desktop/releases"
 case "$XBPS_TARGET_MACHINE" in
 x86_64)
 	distfiles="https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz"
-	checksum=24ad20de7b68aea5f961ba3e7832044b42523d0d593ac43669ab3266bbabf336
+	checksum=882c0d10a082ed5a1dbf1b16a29ed8b4d5bdfa24ff7ffdc778522b26f8026c9a
 	;;
 aarch64)
 	distfiles="https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-aarch64.tar.xz"
-	checksum=8bc01d3e01b5d1f3f7d5713f499e69ea35b2d26559a6eeab3622efe6b8fd5e80
+	checksum=e8a51d57e4e5caeb6e32c7fbb5d45401996b8111691f80fc24b80d0cbda05f6a
 	;;
 *)
 	broken="No distfiles available for this target"
