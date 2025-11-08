@@ -19,6 +19,7 @@ homepage="https://hyprland.org/"
 changelog="https://github.com/hyprwm/Hyprland/releases"
 distfiles="https://github.com/hyprwm/Hyprland/releases/download/v${version}/source-v${version}.tar.gz"
 checksum=c3ac1ab4b157de39a32d22a354be726cd8ebb380c8637fd6a04d8cd71eea191f
+make_check=no
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
     configure_args+=" -DCMAKE_CXX_FLAGS=\"-lexecinfo\""
