@@ -49,8 +49,46 @@ jobs:
         run: |
           git clone --depth 1 "https://github.com/${{ github.repository }}.git" extra
           cd extra
+          # we need the previous revision to diff against
+          if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+              git fetch --no-tags origin "${{ github.event.before }}" --depth 1 || true
+          fi
           git fetch --no-tags origin "${{ github.sha }}" --depth 1
           git checkout --detach "${{ github.sha }}"
+
+      - name: Determine changed templates
+        id: changed
+        run: |
+            cd extra
+
+            base="${{ github.event.before }}"
+            tip="${{ github.sha }}"
+
+            # added/modified templates
+            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+                changed_pkgs=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f ")
+                removed_pkgs=""
+            else
+                changed_pkgs=$(git diff --name-only "$base" "$tip" -- 'srcpkgs/*/template' \
+                    | cut -d/ -f2 \
+                    | sort -u \
+                    | tr '\n' ' ')
+                removed_pkgs=$(git diff --name-status "$base" "$tip" -- 'srcpkgs/*/template' \
+                    | awk '$1=="D"{print $2}' \
+                    | cut -d/ -f2 \
+                    | sort -u \
+                    | tr '\n' ' ')
+            fi
+
+            changed_pkgs="${changed_pkgs%% }"
+            removed_pkgs="${removed_pkgs%% }"
+
+            echo "Changed templates: ${changed_pkgs:-<none>}"
+            echo "Removed templates: ${removed_pkgs:-<none>}"
+
+            echo "pkgs=$changed_pkgs" >> "$GITHUB_OUTPUT"
+            echo "removed=$removed_pkgs" >> "$GITHUB_OUTPUT"
+
 
       - name: Checkout void-packages
         run: |
@@ -104,8 +142,14 @@ jobs:
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
           cd void-packages
-          pkgs=$(find ../extra/srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
+
+          changed="${{ steps.changed.outputs.pkgs }}"
           
+          if [ -z "$changed" ]; then
+              echo "No changed templates, skipping build."
+              exit 0
+          fi
+
           if [ "$BOOTSTRAP" != "$ARCH" ]; then
               arch="-a $ARCH"
           fi
@@ -114,7 +158,7 @@ jobs:
               test="-Q"
           fi
 
-          PKGS=$(sudo -Eu builder ./xbps-src $test sort-dependencies $pkgs)
+          PKGS=$(sudo -Eu builder ./xbps-src $test sort-dependencies $changed)
           failed=""
 
           for pkg in ${PKGS}; do
@@ -133,6 +177,7 @@ jobs:
           fi
 
       - name: Sign
+        if: ${{ steps.changed.outputs.pkgs != '' }}
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           XBPS_ARCH: ${{ matrix.target }}
@@ -160,15 +205,21 @@ jobs:
 
       - name: Set release tag
         id: set_tag
+        if: ${{ steps.changed.outputs.pkgs != '' || steps.changed.outputs.removed != '' }}
         run: echo "tag=build-$(date +'%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"
 
       - name: Push binpkgs branch (per arch)
+        if: ${{ steps.changed.outputs.pkgs != '' || steps.changed.outputs.removed != '' }}
         env:
             REPO_OWNER: ${{ github.repository_owner }}
             REPO_NAME: ${{ github.event.repository.name }}
             ACCESS_GIT: ${{ secrets.ACCESS_GIT }}
             RESULT_NAME: ${{ matrix.config.arch }}
         run: |
+          set -e
+          changed="${{ steps.changed.outputs.pkgs }}"
+          removed="${{ steps.changed.outputs.removed }}"
+
           cd extra
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -176,12 +227,33 @@ jobs:
           BRANCH="repository-${RESULT_NAME}"
           REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
 
-          # Delete old binary repository, create new one
-          git push "$REMOTE" -d "$BRANCH" || true
-          git switch --orphan "$BRANCH"
+          # get existing branch if it exists
+          if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
+              # fetch remote branch and create/update local branch with the same name
+              git fetch "$REMOTE" "$BRANCH:$BRANCH"
+              git checkout "$BRANCH"
+          else
+              git checkout --orphan "$BRANCH"
+          fi
 
-          # Populate and push new binary repository
-          cp ../void-packages/hostdir/binpkgs/* ./
-          git add .
-          git commit -m "Upload latest packages to repository"
-          git push -f "$REMOTE" "$BRANCH"
+          # remove packages whose template was deleted
+          if [ -n "$removed" ]; then
+              echo "Removing packages for deleted templates: $removed"
+              for pkg in $removed; do
+                  # remove all matching package files (main, -dbg, -devel, any version/arch)
+                  rm -f ./"$pkg"-*.xbps ./"$pkg"-*.xbps.sig ./*"$pkg"*-${RESULT_NAME}.xbps 2>/dev/null || true
+              done
+          fi
+
+          # copy newly built packages (if any)
+          if [ -d ../void-packages/hostdir/binpkgs ]; then
+              cp ../void-packages/hostdir/binpkgs/* ./
+          fi
+
+          git add -A
+          if git diff --cached --quiet; then
+              echo "No changes to push."
+          else
+              git commit -m "Update binary repository for ${RESULT_NAME}"
+              git push "$REMOTE" "$BRANCH"
+          fi
