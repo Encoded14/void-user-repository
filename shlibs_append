@@ -2,6 +2,7 @@ libaquamarine.so.8 aquamarine-0.9.5_1
 libhyprcursor.so.0 hyprcursor-0.1.13_1
 libhyprlang.so.2 hyprlang-0.6.4_2
 libhyprgraphics.so.2 hyprgraphics-0.3.0_1
+libhyprtoolkit.so.2 hyprtoolkit-0.2.4_1
 libhyprutils.so.9 hyprutils-0.10.0_1
 libsdbus-c++.so.2 sdbus-cpp-2.1.0_1
 libspng.so.0 libspng-0.7.4_1
