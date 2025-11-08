@@ -3,7 +3,7 @@ pkgname=hyprtoolkit
 version=0.2.4
 revision=1
 build_style=cmake
-configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
+configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DDISABLE_TESTS=ON"
 hostmakedepends="cmake hyprwayland-scanner pkgconf"
 makedepends="aquamarine cairo-devel gtest-devel hyprgraphics hyprlang hyprutils
  iniparser-devel libdrm-devel libgbm-devel libglvnd-devel libxkbcommon-devel
