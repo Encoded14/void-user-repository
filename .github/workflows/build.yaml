@@ -96,6 +96,15 @@ jobs:
           cd void-packages
           git checkout --detach master
 
+      - name: List repo templates
+        id: repo_pkgs
+        run: |
+            cd extra
+            pkgs=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f ")
+            pkgs=${pkgs%% }
+            echo "Templates in this repo: $pkgs"
+            echo "all=$pkgs" >> "$GITHUB_OUTPUT"
+
       - name: Merge templates and edit shlibs
         run: |
           echo "==> copying templates..."
@@ -181,9 +190,55 @@ jobs:
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           XBPS_ARCH: ${{ matrix.target }}
+          ACCESS_GIT: ${{ secrets.ACCESS_GIT }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          RESULT_NAME: ${{ matrix.config.arch }}
         working-directory: void-packages/hostdir/binpkgs/
         run: |
+          set -e
           export PATH="/opt/xbps/usr/bin/:$PATH"
+
+          BRANCH="repository-${RESULT_NAME}"
+          REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
+
+          echo "==> pull old repo packages (if repo branch exists)..."
+          mkdir -p /tmp/oldrepo
+          if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
+              git clone --depth 1 --branch "$BRANCH" "$REMOTE" /tmp/oldrepo
+              # copy all existing packages + metadata into current binpkgs dir
+              cp -v /tmp/oldrepo/* . 2>/dev/null || true
+          else
+              echo "No existing $BRANCH on remote, starting fresh."
+          fi
+
+          removed="${{ steps.changed.outputs.removed }}"
+          if [ -n "$removed" ]; then
+              echo "==> removing packages for deleted templates: $removed"
+              for pkg in $removed; do
+                  rm -f ./"$pkg"-*.xbps ./"$pkg"-*.xbps.sig 2>/dev/null || true
+              done
+          fi
+
+          allow="${{ steps.repo_pkgs.outputs.all }}"
+          echo "==> pruning packages not from our repo..."
+          for f in *.xbps; do
+              [ -e "$f" ] || continue
+              base="${f%%-*}"
+              keep=0
+              for pkg in $allow; do
+                  case "$f" in
+                      "$pkg".xbps|"$pkg"-*.xbps)
+                          keep=1
+                          break
+                          ;;
+                  esac
+              done
+              if [ $keep -eq 0 ]; then
+                  echo "   - pruning foreign package: $f"
+                  rm -f "$f" "$f".sig 2>/dev/null || true
+              fi
+          done
 
           echo "==> writing private key to file..."
           printf "%s\n" "$PRIV_KEY" > private.pem
@@ -217,9 +272,6 @@ jobs:
             RESULT_NAME: ${{ matrix.config.arch }}
         run: |
           set -e
-          changed="${{ steps.changed.outputs.pkgs }}"
-          removed="${{ steps.changed.outputs.removed }}"
-
           cd extra
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -227,28 +279,16 @@ jobs:
           BRANCH="repository-${RESULT_NAME}"
           REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
 
-          # get existing branch if it exists
+          # fetch existing branch into a local branch of the same name
           if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
-              # fetch remote branch and create/update local branch with the same name
               git fetch "$REMOTE" "$BRANCH:$BRANCH"
               git checkout "$BRANCH"
           else
               git checkout --orphan "$BRANCH"
           fi
 
-          # remove packages whose template was deleted
-          if [ -n "$removed" ]; then
-              echo "Removing packages for deleted templates: $removed"
-              for pkg in $removed; do
-                  # remove all matching package files (main, -dbg, -devel, any version/arch)
-                  rm -f ./"$pkg"-*.xbps ./"$pkg"-*.xbps.sig ./*"$pkg"*-${RESULT_NAME}.xbps 2>/dev/null || true
-              done
-          fi
-
-          # copy newly built packages (if any)
-          if [ -d ../void-packages/hostdir/binpkgs ]; then
-              cp ../void-packages/hostdir/binpkgs/* ./
-          fi
+          # now drop in the fully signed + indexed repo from the container build dir
+          cp ../void-packages/hostdir/binpkgs/* ./
 
           git add -A
           if git diff --cached --quiet; then
