@@ -142,6 +142,7 @@ Note: this script not only works for the extra template files provided in this r
 | hyprpaper                   | 0.7.5   | [Encoded14](https://github.com/Encoded14) | |
 | hyprpicker                  | 0.4.5   | [Encoded14](https://github.com/Encoded14) | |
 | hyprpolkitagent             | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
+| hyprshot                    | 1.3.0   | [Encoded14](https://github.com/Encoded14) | |
 | hyprsunset                  | 0.3.3   | [Encoded14](https://github.com/Encoded14) | |
 | hyprsysteminfo              | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
 | hyprtoolkit                 | 0.2.4   | [Encoded14](https://github.com/Encoded14) | |
