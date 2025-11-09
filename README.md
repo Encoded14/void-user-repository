@@ -153,7 +153,7 @@ Note: this script not only works for the extra template files provided in this r
 | sdbus-cpp                   | 2.1.0   | [Encoded14](https://github.com/Encoded14) | |
 | tomlplusplus                | 3.4.0   | [Encoded14](https://github.com/Encoded14) | |
 | ly                          | 1.0.3   | [Encoded14](https://github.com/Encoded14) | compatibility: x86_64 only |
-| zen-browser (stable)        | 1.17.4b | [Encoded14](https://github.com/Encoded14) | compatibility: glibc only |
+| zen-browser (stable)        | 1.17.6b | [Encoded14](https://github.com/Encoded14) | compatibility: glibc only |
 
 <hr>
 
