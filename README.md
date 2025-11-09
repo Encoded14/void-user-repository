@@ -2,12 +2,11 @@
 
 > [!NOTE]
 > This project is **not affiliated with or endorsed by the Void Linux project** or its maintainers.
-It is an **unofficial community project** designed to simplify managing and building user-contributed packages using the void-packages build system.
-Use at your own discretion.
+>
+>Use at your own discretion.
 
 ## Overview
-A collection of template files for building packages on Void Linux.
-Includes a helper script, vay, which simplifies local package building and installation.
+A collection of template files for building packages on Void Linux with xbps-src.
 If you don't wish to build the packages locally, this repository also provides prebuilt binaries.
 
 > [!WARNING]
@@ -81,42 +80,6 @@ Currently packages are tested on / crosscompiled for the following architectures
 
 </details>
 
-<details>
-<summary><b> 🧪 The vay script </b></summary>
-
-Automatically performs the actions needed to build the packages locally on your system.
-Note: this script not only works for the extra template files provided in this repository but also for packages not distributed in the Voidlinux mirrors such as nonfree packages (discord, spotify, etc.).
-
-> **Security conscious?**  You can review the script [here](https://raw.githubusercontent.com/Encoded14/void-user-repository/refs/heads/master/vay.sh) before running it. Furthermore, instead of symlinking the script, you can move it into a directory in your $PATH. That way you ensure it won’t change when you update this repository.
-
-1. Start by cloning this repository.
-
-    ```
-    git clone https://github.com/Encoded14/void-user-repository.git
-    ```
-2. Change into the cloned directory:
-
-    ```
-    cd void-user-repository
-    ```
-3. Create `~/.local/bin` if it doesn’t already exist:
-
-    ```
-    mkdir -p ~/.local/bin
-    ```
-4. Symlink the helper script:
-
-    ```
-    ln -sf "$(realpath vay.sh)" "$HOME/.local/bin/vay"
-    ```
-5. Run the helper by typing vay followed by one or more package names:
-
-    ```
-    vay <package1> <package2> ...
-    ```
-
-</details>
-
 <hr>
 
 ## Available packages
@@ -152,18 +115,16 @@ Note: this script not only works for the extra template files provided in this r
 | libspng                     | 0.7.4   | [Encoded14](https://github.com/Encoded14) | |
 | sdbus-cpp                   | 2.1.0   | [Encoded14](https://github.com/Encoded14) | |
 | tomlplusplus                | 3.4.0   | [Encoded14](https://github.com/Encoded14) | |
-| ly                          | 1.0.3   | [Encoded14](https://github.com/Encoded14) | compatibility: x86_64 only |
 | zen-browser (stable)        | 1.17.6b | [Encoded14](https://github.com/Encoded14) | compatibility: glibc only |
 
 <hr>
 
 ### Running Hyprland
 
-In order to run Hyprland you will need to install some additional packages which will depend on your setup, for example a [session and seat manager](https://docs.voidlinux.org/config/session-management.html) and [graphics drivers](https://docs.voidlinux.org/config/graphical-session/graphics-drivers/index.html). You may also have to add the user to the `_seatd` group. If you use an Nvidia GPU refer to the [Hyprland Wiki](https://wiki.hyprland.org/Nvidia), but keep in mind that Hyprland does not officially support Nvidia.
+In order to run Hyprland you will need to install some additional packages which will depend on your setup, for example a [session and seat manager](https://docs.voidlinux.org/config/session-management.html) and [graphics drivers](https://docs.voidlinux.org/config/graphical-session/graphics-drivers/index.html). If you use an Nvidia GPU refer to the [Hyprland Wiki](https://wiki.hyprland.org/Nvidia), but keep in mind that Hyprland does not officially support Nvidia.
 
 ### Contributing
-Contributions are greatly appreciated. Overall, this repository adheres to the same rules and guidelines as the [official void-packages repository](https://github.com/void-linux/void-packages/blob/master/CONTRIBUTING.md). The main difference is that here, you’re welcome to add template files for Chromium or Firefox forks if they provide additional value beyond changing certain settings or configuration files.
+Contributions are greatly appreciated. Overall, this repository adheres to the same rules and guidelines as the [official void-packages repository](https://github.com/void-linux/void-packages/blob/master/CONTRIBUTING.md).
 
 ### Credits
-[Makrennel: hyprland-void](https://github.com/Makrennel/hyprland-void): Hyprland template files  
-[grvn: void-packages](https://github.com/grvn/void-packages): various template files
+[Makrennel: hyprland-void](https://github.com/Makrennel/hyprland-void): Hyprland template files
