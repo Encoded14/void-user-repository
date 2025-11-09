@@ -64,12 +64,11 @@ jobs:
             base="${{ github.event.before }}"
             tip="${{ github.sha }}"
 
-            # added/modified templates
             if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
                 changed_pkgs=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f ")
                 removed_pkgs=""
             else
-                changed_pkgs=$(git diff --name-only "$base" "$tip" -- 'srcpkgs/*/template' \
+                changed_pkgs=$(git diff --name-only "$base" "$tip" --diff-filter=AM -- 'srcpkgs/*/template' \
                     | cut -d/ -f2 \
                     | sort -u \
                     | tr '\n' ' ')
@@ -88,7 +87,6 @@ jobs:
 
             echo "pkgs=$changed_pkgs" >> "$GITHUB_OUTPUT"
             echo "removed=$removed_pkgs" >> "$GITHUB_OUTPUT"
-
 
       - name: Checkout void-packages
         run: |
