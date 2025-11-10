@@ -99,7 +99,7 @@ Currently packages are tested on / crosscompiled for the following architectures
 | hyprland-guiutils           | 0.1.0   | [Encoded14](https://github.com/Encoded14) | |
 | hyprland-protocols          | 0.7.0   | [Encoded14](https://github.com/Encoded14) | |
 | hyprland-qt-support         | 0.1.0   | [Encoded14](https://github.com/Encoded14) | |
-| hyprland                    | 0.52.0  | [Encoded14](https://github.com/Encoded14) | |
+| hyprland                    | 0.52.1  | [Encoded14](https://github.com/Encoded14) | |
 | hyprlang                    | 0.6.4   | [Encoded14](https://github.com/Encoded14) | |
 | hyprlock                    | 0.9.2   | [Encoded14](https://github.com/Encoded14) | |
 | hyprpaper                   | 0.7.5   | [Encoded14](https://github.com/Encoded14) | |
