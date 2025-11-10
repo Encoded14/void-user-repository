@@ -285,24 +285,22 @@ jobs:
         run: |
           set -e
           cd extra
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           BRANCH="repository-${RESULT_NAME}"
           REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
 
-          # fetch existing branch into a local branch of the same name
           if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
               git fetch "$REMOTE" "$BRANCH:$BRANCH"
               git checkout "$BRANCH"
           else
-
               git checkout --orphan "$BRANCH"
-              git rm -rf . || true
-              find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           fi
 
-          # now drop in the fully signed + indexed repo from the container build dir
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+
           cp ../void-packages/hostdir/binpkgs/* ./
 
           git add -A
