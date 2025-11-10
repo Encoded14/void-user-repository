@@ -108,8 +108,8 @@ Currently packages are tested on / crosscompiled for the following architectures
 | hyprshot                    | 1.3.0   | [Encoded14](https://github.com/Encoded14) | |
 | hyprsunset                  | 0.3.3   | [Encoded14](https://github.com/Encoded14) | |
 | hyprsysteminfo              | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
-| hyprtoolkit                 | 0.2.4   | [Encoded14](https://github.com/Encoded14) | |
-| hyprutils                   | 0.10.1  | [Encoded14](https://github.com/Encoded14) | |
+| hyprtoolkit                 | 0.3.0   | [Encoded14](https://github.com/Encoded14) | |
+| hyprutils                   | 0.10.2  | [Encoded14](https://github.com/Encoded14) | |
 | hyprwayland-scanner         | 0.4.5   | [Encoded14](https://github.com/Encoded14) | |
 | xdg-desktop-portal-hyprland | 3.4.0   | [Encoded14](https://github.com/Encoded14) | |
 | libspng                     | 0.7.4   | [Encoded14](https://github.com/Encoded14) | |
