@@ -251,20 +251,22 @@ jobs:
             fi
 
             # 3. delete packages we just rebuilt successfully
-            built="${{ steps.build_step.outputs.built }}"
-            if [ -n "$built" ]; then
-                echo "==> removing old versions of rebuilt packages..."
-                for pkg in $built; do
-                    rm -f "$pkg"-*.xbps "$pkg"-*.xbps.sig 2>/dev/null || true
-                done
-            fi
+            for f in /tmp/newpkgs/*.xbps; do
+                [ -e "$f" ] || continue
+                base=$(basename "$f")
+                # pkgname = everything before the first -<digit>
+                pkgname=$(printf "%s\n" "$base" | sed -E 's/-[0-9].*$//')
+                # remove all versions/revisions of that package from current repo dir
+                rm -f "${pkgname}-"*.xbps "${pkgname}-"*.xbps.sig 2>/dev/null || true
+            done
 
             # 4. also delete packages for templates that were removed
             removed="${{ steps.changed.outputs.removed }}"
             if [ -n "$removed" ]; then
                 echo "==> removing packages for deleted templates..."
                 for pkg in $removed; do
-                    rm -f "$pkg"-*.xbps "$pkg"-*.xbps.sig 2>/dev/null || true
+                    rm -f "${pkg}-"*.xbps "${pkg}-"*.xbps.sig 2>/dev/null || true
+                    rm -f "${pkg}.xbps" "${pkg}.xbps.sig" 2>/dev/null || true
                 done
             fi
 
