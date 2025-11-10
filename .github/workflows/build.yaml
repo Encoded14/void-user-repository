@@ -184,7 +184,6 @@ jobs:
           fi
 
       - name: Sign
-        if: ${{ steps.changed.outputs.pkgs != '' || steps.changed.outputs.removed != '' }}
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           XBPS_ARCH: ${{ matrix.config.arch }}
