@@ -302,15 +302,20 @@ jobs:
             REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
 
             if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
-              git fetch "$REMOTE" "$BRANCH"
-              git checkout -B "$BRANCH" FETCH_HEAD
+                git fetch "$REMOTE" "$BRANCH"
+                git checkout -B "$BRANCH" FETCH_HEAD
             else
                 git checkout --orphan "$BRANCH"
             fi
 
+            mkdir -p /tmp/failfiles
+            cp build-failures-* /tmp/failfiles/ 2>/dev/null || true
+
             find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 
             cp ../void-packages/hostdir/binpkgs/* ./
+
+            cp /tmp/failfiles/* . 2>/dev/null || true
 
             git add -A
             if git diff --cached --quiet; then
@@ -319,4 +324,3 @@ jobs:
                 git commit -m "Update binary repository for ${RESULT_NAME}"
                 git push "$REMOTE" "$BRANCH"
             fi
-
