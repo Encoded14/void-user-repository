@@ -282,7 +282,10 @@ jobs:
               git fetch "$REMOTE" "$BRANCH:$BRANCH"
               git checkout "$BRANCH"
           else
+
               git checkout --orphan "$BRANCH"
+              git rm -rf . || true
+              find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           fi
 
           # now drop in the fully signed + indexed repo from the container build dir
