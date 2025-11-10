@@ -8,7 +8,6 @@ on:
         - 'srcpkgs/**'
   workflow_dispatch:
 
-
 jobs:
   build:
     name: Build packages
@@ -37,24 +36,24 @@ jobs:
     steps:
       - name: Prepare container
         run: |
-          # switch to repo-ci mirror
-          mkdir -p /etc/xbps.d && cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
-          sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
-          # install dependencies
-          xbps-install -Syu xbps && xbps-install -yu && xbps-install -y sudo bash curl git
-          # create non-root user
-          useradd -G xbuilder -M builder
+            # switch to repo-ci mirror
+            mkdir -p /etc/xbps.d && cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+            sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
+            # install dependencies
+            xbps-install -Syu xbps && xbps-install -yu && xbps-install -y sudo bash curl git
+            # create non-root user
+            useradd -G xbuilder -M builder
 
       - name: Checkout this repo
         run: |
-          git clone --depth 1 "https://github.com/${{ github.repository }}.git" extra
-          cd extra
-          # we need the previous revision to diff against
-          if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
-              git fetch --no-tags origin "${{ github.event.before }}" --depth 1 || true
-          fi
-          git fetch --no-tags origin "${{ github.sha }}" --depth 1
-          git checkout --detach "${{ github.sha }}"
+            git clone --depth 1 "https://github.com/${{ github.repository }}.git" extra
+            cd extra
+            # we need the previous revision to diff against
+            if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+                git fetch --no-tags origin "${{ github.event.before }}" --depth 1 || true
+            fi
+            git fetch --no-tags origin "${{ github.sha }}" --depth 1
+            git checkout --detach "${{ github.sha }}"
 
       - name: Determine changed templates
         id: changed
@@ -90,100 +89,134 @@ jobs:
 
       - name: Checkout void-packages
         run: |
-          git clone https://github.com/void-linux/void-packages.git void-packages
-          cd void-packages
-          git checkout --detach master
-
-      - name: List repo templates
-        id: repo_pkgs
-        run: |
-            cd extra
-            pkgs=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f ")
-            pkgs=${pkgs%% }
-            echo "Templates in this repo: $pkgs"
-            echo "all=$pkgs" >> "$GITHUB_OUTPUT"
+            git clone https://github.com/void-linux/void-packages.git void-packages
+            cd void-packages
+            git checkout --detach master
 
       - name: Merge templates and edit shlibs
         run: |
-          echo "==> copying templates..."
-          cp -rv extra/srcpkgs/* void-packages/srcpkgs/
+            echo "==> copying templates..."
+            cp -rv extra/srcpkgs/* void-packages/srcpkgs/
 
-          SHLIBS_FILE="void-packages/common/shlibs"
-          APPEND_FILE="extra/shlibs_append"
-          REMOVE_FILE="extra/shlibs_remove"
+            SHLIBS_FILE="void-packages/common/shlibs"
+            APPEND_FILE="extra/shlibs_append"
+            REMOVE_FILE="extra/shlibs_remove"
 
-          echo "==> updating common/shlibs..."
-          if [ -f "$REMOVE_FILE" ]; then
-            while IFS= read -r line; do
-              [ -z "$line" ] && continue
-              grep -vF "$line" "$SHLIBS_FILE" > "$SHLIBS_FILE.tmp" && mv "$SHLIBS_FILE.tmp" "$SHLIBS_FILE"
-              echo "   - removed: $line"
-            done < "$REMOVE_FILE"
-          fi
+            echo "==> updating common/shlibs..."
+            if [ -f "$REMOVE_FILE" ]; then
+                while IFS= read -r line; do
+                    [ -z "$line" ] && continue
+                    grep -vF "$line" "$SHLIBS_FILE" > "$SHLIBS_FILE.tmp" && mv "$SHLIBS_FILE.tmp" "$SHLIBS_FILE"
+                    echo "   - removed: $line"
+                done < "$REMOVE_FILE"
+            fi
 
-          if [ -f "$APPEND_FILE" ]; then
-            while IFS= read -r line; do
-              [ -z "$line" ] && continue
-              if ! grep -qF "$line" "$SHLIBS_FILE"; then
-                echo "$line" >> "$SHLIBS_FILE"
-                echo "   + added: $line"
-              fi
-            done < "$APPEND_FILE"
-          fi
+            if [ -f "$APPEND_FILE" ]; then
+                while IFS= read -r line; do
+                    [ -z "$line" ] && continue
+                    if ! grep -qF "$line" "$SHLIBS_FILE"; then
+                        echo "$line" >> "$SHLIBS_FILE"
+                        echo "   + added: $line"
+                    fi
+                done < "$APPEND_FILE"
+            fi
 
-          echo "=> applying inline edits..."
-          if [ -d "void-packages/srcpkgs/hyprutils/patches" ]; then
-              echo "   - removing void-packages/srcpkgs/hyprutils/patches"
-              rm -rf void-packages/srcpkgs/hyprutils/patches
-          fi
+            echo "=> applying inline edits..."
+            if [ -d "void-packages/srcpkgs/hyprutils/patches" ]; then
+                echo "   - removing void-packages/srcpkgs/hyprutils/patches"
+                rm -rf void-packages/srcpkgs/hyprutils/patches
+            fi
 
       - name: Prepare masterdir
         run: |
-          cd void-packages
-          chown -R builder:builder . &&
-          sudo -Eu builder common/travis/set_mirror.sh &&
-          sudo -Eu builder common/travis/prepare.sh &&
-          common/travis/fetch-xtools.sh
+            cd void-packages
+            chown -R builder:builder . &&
+            sudo -Eu builder common/travis/set_mirror.sh &&
+            sudo -Eu builder common/travis/prepare.sh &&
+            common/travis/fetch-xtools.sh
 
       - name: Build
+        id: build_step
         run: |
-          export PATH="/opt/xbps/usr/bin/:$PATH"
-          cd void-packages
+            export PATH="/opt/xbps/usr/bin/:$PATH"
+            cd void-packages
 
-          changed="${{ steps.changed.outputs.pkgs }}"
-          
-          if [ -z "$changed" ]; then
-              echo "No changed templates, skipping build."
-              exit 0
-          fi
+            changed="${{ steps.changed.outputs.pkgs }}"
+            removed="${{ steps.changed.outputs.removed }}"
 
-          if [ "$BOOTSTRAP" != "$ARCH" ]; then
-              arch="-a $ARCH"
-          fi
-
-          if [ "$TEST" = 1 ]; then
-              test="-Q"
-          fi
-
-          PKGS=$(sudo -Eu builder ./xbps-src $test sort-dependencies $changed)
-          failed=""
-
-          for pkg in ${PKGS}; do
-            if ! sudo -Eu builder ./xbps-src -j"$(nproc)" -s $arch $test pkg "${pkg}"; then
-              echo "!! build failed for ${pkg}"
-              failed="${failed} ${pkg}"
+            if [ -z "$changed" ]; then
+                echo "No changed templates, skipping build."
+                echo "built=" >> "$GITHUB_OUTPUT"
+                echo "failed=" >> "$GITHUB_OUTPUT"
+                exit 0
             fi
-          done
 
-          if [ -n "${failed}" ]; then
-            echo
-            echo "These packages failed:"
-            for f in ${failed}; do
-                echo "  - ${f}"
+            if [ "$BOOTSTRAP" != "$ARCH" ]; then
+                arch="-a $ARCH"
+            fi
+
+            if [ "$TEST" = 1 ]; then
+                test="-Q"
+            fi
+
+            PKGS=$(sudo -Eu builder ./xbps-src $test sort-dependencies $changed)
+            built=""
+            failed=""
+
+            for pkg in ${PKGS}; do
+                if sudo -Eu builder ./xbps-src -j"$(nproc)" -s $arch $test pkg "${pkg}"; then
+                    built="$built $pkg"
+                else
+                    echo "!! build failed for ${pkg}"
+                    failed="$failed $pkg"
+                fi
             done
-          fi
+
+            built="${built%% }"
+            failed="${failed%% }"
+
+            echo "Built packages: ${built:-<none>}"
+            echo "Failed packages: ${failed:-<none>}"
+
+            echo "built=$built" >> "$GITHUB_OUTPUT"
+            echo "failed=$failed" >> "$GITHUB_OUTPUT"
+
+      - name: Write failed list into repo branch
+        if: ${{ steps.build_step.outputs.failed != '' }}
+        env:
+          ACCESS_GIT: ${{ secrets.ACCESS_GIT }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          RESULT_NAME: ${{ matrix.config.arch }}
+        run: |
+            set -e
+            cd extra
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            BRANCH="repository-${RESULT_NAME}"
+            REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
+
+            if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
+                git fetch "$REMOTE" "$BRANCH:$BRANCH"
+                git checkout "$BRANCH"
+            else
+                git checkout --orphan "$BRANCH"
+                find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+            fi
+
+            echo "${{ steps.build_step.outputs.failed }}" | tr ' ' '\n' > build-failures-${{ matrix.config.arch }}.txt
+
+            git add build-failures-${{ matrix.config.arch }}.txt
+            if git diff --cached --quiet; then
+                echo "No changes to push for failures file."
+            else
+                git commit -m "Record build failures for ${{ matrix.config.arch }}"
+                git push "$REMOTE" "$BRANCH"
+            fi
 
       - name: Sign
+        if: ${{ steps.changed.outputs.pkgs != '' || steps.changed.outputs.removed != '' }}
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           XBPS_ARCH: ${{ matrix.config.arch }}
@@ -193,86 +226,62 @@ jobs:
           RESULT_NAME: ${{ matrix.config.arch }}
         working-directory: void-packages/hostdir/binpkgs/
         run: |
-          set -e
-          export PATH="/opt/xbps/usr/bin/:$PATH"
+            set -e
+            export PATH="/opt/xbps/usr/bin/:$PATH"
 
-          BRANCH="repository-${RESULT_NAME}"
-          REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
+            # 1. stash newly built packages away
+            mkdir -p /tmp/newpkgs
+            cp -v ./*.xbps /tmp/newpkgs/ 2>/dev/null || true
+            cp -v ./*.xbps.sig /tmp/newpkgs/ 2>/dev/null || true
 
-          echo "==> pull old repo packages (if repo branch exists)..."
-          mkdir -p /tmp/oldrepo
-          if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
-              git clone --depth 1 --branch "$BRANCH" "$REMOTE" /tmp/oldrepo
-              cp -v /tmp/oldrepo/*.xbps . 2>/dev/null || true
-              cp -v /tmp/oldrepo/*.xbps.sig . 2>/dev/null || true
-              cp -v /tmp/oldrepo/index* . 2>/dev/null || true
-          else
-              echo "No existing $BRANCH on remote, starting fresh."
-          fi
+            # 2. pull existing repo branch
+            BRANCH="repository-${RESULT_NAME}"
+            REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
+            mkdir -p /tmp/oldrepo
 
-          removed="${{ steps.changed.outputs.removed }}"
-          if [ -n "$removed" ]; then
-              echo "==> removing packages for deleted templates: $removed"
-              for pkg in $removed; do
-                  rm -f ./"$pkg"-*.xbps ./"$pkg"-*.xbps.sig 2>/dev/null || true
-              done
-          fi
+            rm -f ./*
 
-          allow="${{ steps.repo_pkgs.outputs.all }}"
-          echo "==> pruning packages not from this repo..."
-          for f in *.xbps; do
-              [ -e "$f" ] || continue
-              keep=0
-              for pkg in $allow; do
-                  case "$f" in
-                      "$pkg".xbps|"$pkg"-*.xbps)
-                          keep=1
-                          break
-                          ;;
-                  esac
-              done
-              if [ $keep -eq 0 ]; then
-                  echo "   - pruning foreign package: $f"
-                  rm -f "$f" "$f".sig 2>/dev/null || true
-              fi
-          done
+            if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
+                git clone --depth 1 --branch "$BRANCH" "$REMOTE" /tmp/oldrepo
+                cp -v /tmp/oldrepo/*.xbps . 2>/dev/null || true
+                cp -v /tmp/oldrepo/*.xbps.sig . 2>/dev/null || true
+                cp -v /tmp/oldrepo/index* . 2>/dev/null || true
+            else
+                echo "No existing $BRANCH on remote, starting fresh."
+            fi
 
-          echo "==> dropping older versions of packages..."
-          for pkg in $allow; do
-              # list all versions of this package, newest last
-              matches=$(ls -1 ${pkg}-*.xbps 2>/dev/null | sort -V || true)
-              [ -z "$matches" ] && continue
-              newest=$(printf "%s\n" $matches | tail -n 1)
-              for f in $matches; do
-                  if [ "$f" != "$newest" ]; then
-                      echo "   - removing old $f"
-                      rm -f "$f" "$f".sig 2>/dev/null || true
-                  fi
-              done
-          done
+            # 3. delete packages we just rebuilt successfully
+            built="${{ steps.build_step.outputs.built }}"
+            if [ -n "$built" ]; then
+                echo "==> removing old versions of rebuilt packages..."
+                for pkg in $built; do
+                    rm -f "$pkg"-*.xbps "$pkg"-*.xbps.sig 2>/dev/null || true
+                done
+            fi
 
-          echo "==> writing private key to file..."
-          printf "%s\n" "$PRIV_KEY" > private.pem
-          chmod 600 private.pem
+            # 4. also delete packages for templates that were removed
+            removed="${{ steps.changed.outputs.removed }}"
+            if [ -n "$removed" ]; then
+                echo "==> removing packages for deleted templates..."
+                for pkg in $removed; do
+                    rm -f "$pkg"-*.xbps "$pkg"-*.xbps.sig 2>/dev/null || true
+                done
+            fi
 
-          echo "==> merging free + nonfree"
-          if [ -d "nonfree" ]; then
-              mv nonfree/*.xbps .
-          fi
+            # 5. copy the newly built packages back in
+            cp -v /tmp/newpkgs/* . 2>/dev/null || true
 
-          xbps-rindex -a *.xbps || true
-          xbps-rindex -r "$PWD"
-          xbps-rindex -s --signedby "Encoded14 <linusken@tuta.io>" --privkey private.pem "$PWD"
-          xbps-rindex -S --privkey private.pem "$PWD"/*.xbps
-          xbps-rindex -c "$PWD"
+            # 6. sign + reindex
+            printf "%s\n" "$PRIV_KEY" > private.pem
+            chmod 600 private.pem
 
-          echo "==> cleaning up private key..."
-          rm -f private.pem
+            xbps-rindex -a *.xbps || true
+            xbps-rindex -r "$PWD"
+            xbps-rindex -s --signedby "Encoded14 <linusken@tuta.io>" --privkey private.pem "$PWD"
+            xbps-rindex -S --privkey private.pem "$PWD"/*.xbps
+            xbps-rindex -c "$PWD"
 
-      - name: Set release tag
-        id: set_tag
-        if: ${{ steps.changed.outputs.pkgs != '' || steps.changed.outputs.removed != '' }}
-        run: echo "tag=build-$(date +'%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"
+            rm -f private.pem
 
       - name: Push binpkgs branch (per arch)
         if: ${{ steps.changed.outputs.pkgs != '' || steps.changed.outputs.removed != '' }}
@@ -282,30 +291,32 @@ jobs:
             ACCESS_GIT: ${{ secrets.ACCESS_GIT }}
             RESULT_NAME: ${{ matrix.config.arch }}
         run: |
-          set -e
-          cd extra
+            set -e
+            cd extra
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+            BRANCH="repository-${RESULT_NAME}"
+            REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
 
-          BRANCH="repository-${RESULT_NAME}"
-          REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
+            if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
+                git fetch "$REMOTE" "$BRANCH:$BRANCH"
+                git checkout "$BRANCH"
+            else
+                git checkout --orphan "$BRANCH"
+            fi
 
-          if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
-              git fetch "$REMOTE" "$BRANCH:$BRANCH"
-              git checkout "$BRANCH"
-          else
-              git checkout --orphan "$BRANCH"
-          fi
+            # wipe branch contents (keep .git)
+            find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 
-          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+            # copy the fully prepared repo from the container
+            cp ../void-packages/hostdir/binpkgs/* ./
 
-          cp ../void-packages/hostdir/binpkgs/* ./
+            git add -A
+            if git diff --cached --quiet; then
+                echo "No changes to push."
+            else
+                git commit -m "Update binary repository for ${RESULT_NAME}"
+                git push "$REMOTE" "$BRANCH"
+            fi
 
-          git add -A
-          if git diff --cached --quiet; then
-              echo "No changes to push."
-          else
-              git commit -m "Update binary repository for ${RESULT_NAME}"
-              git push "$REMOTE" "$BRANCH"
-          fi
