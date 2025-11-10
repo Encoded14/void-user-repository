@@ -184,7 +184,7 @@ jobs:
           fi
 
       - name: Sign
-        if: ${{ steps.changed.outputs.pkgs != '' }}
+        if: ${{ steps.changed.outputs.pkgs != '' || steps.changed.outputs.removed != '' }}
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           XBPS_ARCH: ${{ matrix.config.arch }}
@@ -204,8 +204,9 @@ jobs:
           mkdir -p /tmp/oldrepo
           if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
               git clone --depth 1 --branch "$BRANCH" "$REMOTE" /tmp/oldrepo
-              # copy all existing packages + metadata into current binpkgs dir
-              cp -v /tmp/oldrepo/* . 2>/dev/null || true
+              cp -v /tmp/oldrepo/*.xbps . 2>/dev/null || true
+              cp -v /tmp/oldrepo/*.xbps.sig . 2>/dev/null || true
+              cp -v /tmp/oldrepo/index* . 2>/dev/null || true
           else
               echo "No existing $BRANCH on remote, starting fresh."
           fi
@@ -219,10 +220,9 @@ jobs:
           fi
 
           allow="${{ steps.repo_pkgs.outputs.all }}"
-          echo "==> pruning packages not from our repo..."
+          echo "==> pruning packages not from this repo..."
           for f in *.xbps; do
               [ -e "$f" ] || continue
-              base="${f%%-*}"
               keep=0
               for pkg in $allow; do
                   case "$f" in
@@ -236,6 +236,20 @@ jobs:
                   echo "   - pruning foreign package: $f"
                   rm -f "$f" "$f".sig 2>/dev/null || true
               fi
+          done
+
+          echo "==> dropping older versions of packages..."
+          for pkg in $allow; do
+              # list all versions of this package, newest last
+              matches=$(ls -1 ${pkg}-*.xbps 2>/dev/null | sort -V || true)
+              [ -z "$matches" ] && continue
+              newest=$(printf "%s\n" $matches | tail -n 1)
+              for f in $matches; do
+                  if [ "$f" != "$newest" ]; then
+                      echo "   - removing old $f"
+                      rm -f "$f" "$f".sig 2>/dev/null || true
+                  fi
+              done
           done
 
           echo "==> writing private key to file..."
