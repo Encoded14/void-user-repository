@@ -302,16 +302,14 @@ jobs:
             REMOTE="https://$REPO_OWNER:${ACCESS_GIT}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
 
             if git ls-remote --exit-code --heads "$REMOTE" "$BRANCH" >/dev/null 2>&1; then
-                git fetch "$REMOTE" "$BRANCH:$BRANCH"
-                git checkout "$BRANCH"
+              git fetch "$REMOTE" "$BRANCH"
+              git checkout -B "$BRANCH" FETCH_HEAD
             else
                 git checkout --orphan "$BRANCH"
             fi
 
-            # wipe branch contents (keep .git)
             find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 
-            # copy the fully prepared repo from the container
             cp ../void-packages/hostdir/binpkgs/* ./
 
             git add -A
