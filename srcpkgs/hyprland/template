@@ -1,6 +1,6 @@
 # Template file for 'hyprland'
 pkgname=hyprland
-version=0.52.0
+version=0.52.1
 revision=1
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release \ 
@@ -18,7 +18,7 @@ license="BSD-3-Clause"
 homepage="https://hyprland.org/"
 changelog="https://github.com/hyprwm/Hyprland/releases"
 distfiles="https://github.com/hyprwm/Hyprland/releases/download/v${version}/source-v${version}.tar.gz"
-checksum=c3ac1ab4b157de39a32d22a354be726cd8ebb380c8637fd6a04d8cd71eea191f
+checksum=c43dac6064abdc51b62065cbae8130887ece0b5834a61d6d99fdb2624111ff25
 make_check=no
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
