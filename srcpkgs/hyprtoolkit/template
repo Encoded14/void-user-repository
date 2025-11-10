@@ -1,6 +1,6 @@
 # Template file for 'hyprtoolkit'
 pkgname=hyprtoolkit
-version=0.2.4
+version=0.3.0
 revision=1
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DDISABLE_TESTS=ON"
@@ -13,7 +13,7 @@ maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
 homepage="https://github.com/hyprwm/hyprgraphics"
 distfiles="https://github.com/hyprwm/hyprtoolkit/archive/refs/tags/v${version}.tar.gz"
-checksum=5b3df44738d9204773a4f1152895c58979ec037494314c07a7fc5f7ff7a2e22c
+checksum=9f7e1a0a7bfe31ef769bfa9dfaef211f193f38b10e0823320336578ecee13d55
 make_check=no
 
 post_install() {
