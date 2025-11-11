@@ -17,5 +17,5 @@ distfiles="https://github.com/hyprwm/${pkgname}/archive/refs/tags/v${version}.ta
 checksum=d4a8ef9115232b3545dd517e96f1251f91022765eb272b5e7057c20e3e7e8837
 
 post_install() {
-    vlicense LICENSE
+	vlicense LICENSE
 }
