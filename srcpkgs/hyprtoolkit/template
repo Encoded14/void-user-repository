@@ -8,6 +8,7 @@ hostmakedepends="cmake hyprwayland-scanner pkgconf"
 makedepends="aquamarine cairo-devel gtest-devel hyprgraphics hyprlang hyprutils
  iniparser-devel libdrm-devel libgbm-devel libglvnd-devel libxkbcommon-devel
  pango-devel pixman-devel wayland-devel wayland-protocols"
+checkdepends="gtest-devel"
 short_desc="A modern C++ Wayland-native GUI toolkit "
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
