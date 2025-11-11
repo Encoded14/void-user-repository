@@ -8,14 +8,14 @@ hostmakedepends="cmake pkgconf"
 makedepends="cairo-devel pango-devel file-devel hyprutils
  libjpeg-turbo-devel libjxl-devel libspng librsvg-devel
  libwebp-devel pixman-devel"
-short_desc="hyprland graphics resources and utilities"
+short_desc="Hyprland graphics resources and utilities"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
 homepage="https://github.com/hyprwm/hyprgraphics"
 distfiles="https://github.com/hyprwm/hyprgraphics/archive/refs/tags/v${version}.tar.gz"
 checksum=01ccac9fdb269be7990358e14eccfda07e641885ba6a14fbafa1dfa7617d16ff
-make_check=no
+make_check=no # cant run in sandbox
 
 post_install() {
-    vlicense LICENSE
+	vlicense LICENSE
 }
