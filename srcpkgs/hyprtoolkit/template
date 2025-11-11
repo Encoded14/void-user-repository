@@ -3,11 +3,12 @@ pkgname=hyprtoolkit
 version=0.3.0
 revision=1
 build_style=cmake
-configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DDISABLE_TESTS=ON"
+configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
 hostmakedepends="cmake hyprwayland-scanner pkgconf"
 makedepends="aquamarine cairo-devel gtest-devel hyprgraphics hyprlang hyprutils
  iniparser-devel libdrm-devel libgbm-devel libglvnd-devel libxkbcommon-devel
  pango-devel pixman-devel wayland-devel wayland-protocols"
+checkdepends="gtest-devel"
 short_desc="A modern C++ Wayland-native GUI toolkit "
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
