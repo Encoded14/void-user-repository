@@ -11,5 +11,5 @@ distfiles="https://github.com/Gustash/Hyprshot/archive/refs/tags/${version}.tar.
 checksum=315bdbe66ee473d811b9af8447bd32124e84d873396ef8ab5ac3f040294f6739
 
 do_install() {
-    vinstall ${pkgname} 755 usr/bin ${pkgname}
+	vbin ${pkgname} ${pkgname}
 }
