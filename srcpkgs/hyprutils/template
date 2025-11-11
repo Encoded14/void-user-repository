@@ -3,7 +3,8 @@ pkgname=hyprutils
 version=0.10.2
 revision=1
 build_style=cmake
-configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DBUILD_TESTING=OFF"
+configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release \
+ -DCMAKE_INSTALL_PREFIX:PATH=/usr -DBUILD_TESTING=OFF"
 hostmakedepends="cmake pkg-config"
 makedepends="pixman-devel"
 short_desc="Hyprland utilities library used across the ecosystem"
@@ -14,5 +15,5 @@ distfiles="https://github.com/hyprwm/hyprutils/archive/refs/tags/v${version}.tar
 checksum=f468997ee10d2f38413f65e099f717a88c6b7c0a0aba64d2c663d5508dfb5439
 
 post_install() {
-    vlicense LICENSE
+	vlicense LICENSE
 }
