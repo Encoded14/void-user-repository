@@ -15,5 +15,5 @@ distfiles="https://github.com/hyprwm/hyprland-qt-support/archive/refs/tags/v${ve
 checksum=cac1f980bd088b890097f3f999cfdf03e73ee94c53f3c92d0b3bc23baa9e7b2c
 
 post_install() {
-  vlicense LICENSE
+	vlicense LICENSE
 }
