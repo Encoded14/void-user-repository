@@ -6,6 +6,7 @@ build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DBUILD_TESTING=OFF"
 hostmakedepends="cmake pkg-config"
 makedepends="pixman-devel"
+checkdepends="gtest-devel"
 short_desc="Hyprland utilities library used across the ecosystem"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
