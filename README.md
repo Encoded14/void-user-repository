@@ -92,7 +92,7 @@ Currently packages are tested on / crosscompiled for the following architectures
 | package | version | maintainer | notes |
 |:--------|:--------|:-----------|:------|
 | aquamarine                  | 0.9.5   | [Encoded14](https://github.com/Encoded14) | |
-| glaze                       | 6.0.1   | [Encoded14](https://github.com/Encoded14) | |
+| glaze                       | 6.0.3   | [Encoded14](https://github.com/Encoded14) | |
 | hyprcursor                  | 0.1.13  | [Encoded14](https://github.com/Encoded14) | |
 | hyprgraphics                | 0.3.0   | [Encoded14](https://github.com/Encoded14) | |
 | hypridle                    | 0.1.7   | [Encoded14](https://github.com/Encoded14) | |
