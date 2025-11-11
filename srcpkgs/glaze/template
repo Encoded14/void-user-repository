@@ -3,7 +3,8 @@ pkgname=glaze
 version=6.0.3
 revision=1
 build_style=cmake
-configure_args="-DBUILD_TESTING:BOOL=OFF -DCMAKE_BUILD_TYPE:STRING=Release -Dglaze_ENABLE_FUZZING:BOOL=OFF"
+configure_args="-DBUILD_TESTING:BOOL=OFF -DCMAKE_BUILD_TYPE:STRING=Release \
+ -Dglaze_ENABLE_FUZZING:BOOL=OFF"
 hostmakedepends="cmake pkgconf"
 short_desc="Extremely fast, in memory, JSON and interface library for modern C++"
 maintainer="Encoded14 <linusken@tuta.io>"
@@ -13,5 +14,5 @@ distfiles="https://github.com/stephenberry/glaze/archive/refs/tags/v${version}.t
 checksum=f73f70b813df0bf1536c4bb868aec7c0e55f9160b8798b6fc9d66735ab475ef4
 
 post_install() {
-    vlicense LICENSE
+	vlicense LICENSE
 }
