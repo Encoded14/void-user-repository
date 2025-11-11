@@ -103,7 +103,7 @@ Currently packages are tested on / crosscompiled for the following architectures
 | hyprlang                    | 0.6.4   | [Encoded14](https://github.com/Encoded14) | |
 | hyprlock                    | 0.9.2   | [Encoded14](https://github.com/Encoded14) | |
 | hyprpaper                   | 0.7.5   | [Encoded14](https://github.com/Encoded14) | |
-| hyprpicker                  | 0.4.5   | [Encoded14](https://github.com/Encoded14) | |
+| hyprpicker                  | 0.4.5   | [Encoded14](https://github.com/Encoded14) | Due to this package being in the upstream repos you need to either build it manually or temporarily give this repo higher priority `sudo xbps-install --repository=https://raw.githubusercontent.com/Encoded14/void-user-repository/repository-x86_64 hyprpicker` |
 | hyprpolkitagent             | 0.1.3   | [Encoded14](https://github.com/Encoded14) | |
 | hyprshot                    | 1.3.0   | [Encoded14](https://github.com/Encoded14) | |
 | hyprsunset                  | 0.3.3   | [Encoded14](https://github.com/Encoded14) | |
