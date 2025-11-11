@@ -13,5 +13,5 @@ distfiles="${homepage}/archive/refs/tags/v${version}.tar.gz"
 checksum=2125d279eea106e3e6c8dc9fa15181c75d67467b5352d24e2a07903b10abad62
 
 post_install() {
-    vlicense LICENSE
+	vlicense LICENSE
 }
