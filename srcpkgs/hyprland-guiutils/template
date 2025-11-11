@@ -3,12 +3,13 @@ pkgname=hyprland-guiutils
 version=0.1.0
 revision=2
 build_style=cmake
-configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
+configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release \
+ -DCMAKE_INSTALL_PREFIX:PATH=/usr"
 hostmakedepends="cmake ninja pkgconf"
-makedepends="aquamarine cairo-devel hyprgraphics hyprlang 
+makedepends="aquamarine cairo-devel hyprgraphics hyprlang
  hyprtoolkit hyprutils libdrm-devel pixman-devel"
 depends="hyprland-qt-support"
-short_desc="Qt/QML utility apps for Hyprland"
+short_desc="Hyprland GUI utilities (successor to hyprland-qtutils)"
 maintainer="Encoded14 <linusken@tuta.io>"
 license="BSD-3-Clause"
 homepage="https://github.com/hyprwm/hyprland-guiutils"
@@ -16,5 +17,5 @@ distfiles="https://github.com/hyprwm/hyprland-guiutils/archive/refs/tags/v${vers
 checksum=4edb387a49b29cc547c991e3238a3e6de69336408ba4d9881ab1ba4d6a9dd542
 
 post_install() {
-    vlicense LICENSE
+	vlicense LICENSE
 }
